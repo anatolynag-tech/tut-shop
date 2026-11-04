@@ -37,16 +37,24 @@
 
         .carousel-container {
             display: flex; overflow-x: auto; scroll-snap-type: x mandatory;
-            padding: 40px 20px; gap: 20px; scrollbar-width: none; -ms-overflow-style: none;
+            padding: 40px 0; gap: 20px; scrollbar-width: none; -ms-overflow-style: none;
         }
         .carousel-container::-webkit-scrollbar { display: none; }
         
         .carousel-item {
-            flex: 0 0 85vw; scroll-snap-align: center; transition: all 0.4s ease;
+            flex: 0 0 280px; /* Размер для компьютера */
+            scroll-snap-align: center; transition: all 0.4s ease;
             transform: scale(0.85); opacity: 0.6;
             display: flex; flex-direction: column; align-items: center;
         }
         .carousel-item.active { transform: scale(1); opacity: 1; }
+
+        /* Размер для телефонов */
+        @media (max-width: 600px) {
+            .carousel-item {
+                flex: 0 0 75vw;
+            }
+        }
 
         .card {
             background: var(--card); border: 1px solid rgba(255,255,255,.08);
@@ -127,9 +135,10 @@
     </div>
 
     <script>
-        // Данные товаров (без чувствительных данных)
+        // Данные товаров
         const products = [
-            { id: 1, name: 'Магний бисглицинат', sub: 'Сон и восстановление', desc: 'Премиальная форма хелатного магния. 360 мг элементарного магния в 3 капсулах для максимального эффекта. 90 капсул.', price: 1300 },            { id: 2, name: 'Витамин D3', sub: 'Иммунитет и кости', desc: 'Капсулы для поддержки иммунитета.', price: 0 },
+            { id: 1, name: 'Магний бисглицинат', sub: 'Сон и восстановление', desc: 'Премиальная форма хелатного магния. 360 мг элементарного магния в 3 капсулах для максимального эффекта. 90 капсул.', price: 1300 },
+            { id: 2, name: 'Витамин D3', sub: 'Иммунитет и кости', desc: 'Капсулы для поддержки иммунитета.', price: 0 },
             { id: 3, name: 'Магний порошковый', sub: 'Большая банка', desc: 'Удобная форма для тех, кто не любит капсулы.', price: 0 },
             { id: 4, name: 'B-комплекс Премиум', sub: 'Энергия и нервная система', desc: 'Активные формы витаминов группы B.', price: 0 },
             { id: 5, name: 'Омега-3', sub: 'Сердце и мозг', desc: 'Высокая концентрация EPA/DHA.', price: 0 }
@@ -137,7 +146,6 @@
 
         const carousel = document.getElementById('carousel');
         
-        // Безопасное создание элементов (защита от XSS)
         products.forEach(p => {
             const item = document.createElement('div');
             item.className = 'carousel-item';
@@ -147,10 +155,10 @@
             
             const imgDiv = document.createElement('div');
             imgDiv.className = 'card-img';
-            imgDiv.textContent = '💊'; // Можно заменить на картинку позже
+            imgDiv.textContent = '💊';
             
             const h3 = document.createElement('h3');
-            h3.textContent = p.name; // Безопасный вывод
+            h3.textContent = p.name;
             
             const sub = document.createElement('div');
             sub.className = 'subtitle';
@@ -173,7 +181,7 @@
             carousel.appendChild(item);
         });
 
-        // Логика карусели (IntersectionObserver)
+        // Центровка (IntersectionObserver)
         const items = document.querySelectorAll('.carousel-item');
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
@@ -186,7 +194,7 @@
         }, { root: carousel, threshold: 0.6 });
         items.forEach(item => observer.observe(item));
 
-        // Корзина (хранится только в памяти браузера)
+        // Корзина
         let cart = [];
         
         function addToCart(id) {
@@ -205,7 +213,7 @@
             const cartItems = document.getElementById('cartItems');
             const cartTotal = document.getElementById('cartTotalPrice');
             
-            cartItems.textContent = ''; // Очистка безопасно
+            cartItems.textContent = '';
             
             if (cart.length === 0) {
                 const empty = document.createElement('p');
@@ -263,16 +271,12 @@
             const phoneInput = document.getElementById('userPhone');
             const addressInput = document.getElementById('userAddress');
 
-            // Валидация
             if (!nameInput.value.trim() || !phoneInput.value.trim() || !addressInput.value.trim()) {
                 alert('Пожалуйста, заполните все поля');
                 return;
             }
 
-            // В будущем здесь будет редирект на Робокассу.
-            // Сейчас - заглушка.
             alert('Заказ оформлен! Сейчас мы перенаправим вас на страницу оплаты (функция в разработке).');
-            // window.location.href = 'https://ваша-ссылка-робокассы';
         }
     </script>
 </body>
