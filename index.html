@@ -219,12 +219,13 @@
             label.style.fontFamily = 'sans-serif';
             
             // Текст на этикетке
+            const shortName = p.name.split(' ')[0].toUpperCase(); // Берем первое слово (МАГНИЙ, ВИТАМИН, ОМЕГА)
             label.innerHTML = `
                 <div style="font-size: 6px; color: #8a6a14; letter-spacing: 1px; margin-bottom: 2px;">TUT HEALTH</div>
-                <div style="font-size: 10px; font-weight: bold; color: #1A0D06; font-family: serif;">МАГНИЙ</div>
-                <div style="font-size: 5px; color: #5C331A; margin-top: 2px;">BISGLYCINATE</div>
+                <div style="font-size: 10px; font-weight: bold; color: #1A0D06; font-family: serif;">${shortName}</div>
+                <div style="font-size: 5px; color: #5C331A; margin-top: 2px;">PREMIUM</div>
                 <div style="width: 20px; height: 1px; background: #8a6a14; margin: 3px 0;"></div>
-                <div style="font-size: 5px; color: #5C331A;">90 КАПСУЛ</div>
+                <div style="font-size: 5px; color: #5C331A;">90 КАПС</div>
             `;
             
             jar.appendChild(lid);
