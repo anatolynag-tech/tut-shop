@@ -42,32 +42,30 @@
             display: flex; overflow-x: auto; scroll-snap-type: x mandatory;
             padding: 40px 20px; gap: 20px;
             cursor: grab;
-            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
         }
         .carousel-container:active { cursor: grabbing; }
-        
-        /* Скрываем полосу прокрутки для красоты, но она есть */
-        .carousel-container::-webkit-scrollbar { height: 6px; }
-        .carousel-container::-webkit-scrollbar-track { background: transparent; }
+        .carousel-container::-webkit-scrollbar { height: 8px; }
+        .carousel-container::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); border-radius: 4px; }
         .carousel-container::-webkit-scrollbar-thumb { background: rgba(212,175,55,0.3); border-radius: 4px; }
         
         .carousel-item {
-            flex: 0 0 75vw; 
+            flex: 0 0 280px; /* Размер для компьютера */
             scroll-snap-align: center; transition: all 0.4s ease;
             transform: scale(0.85); opacity: 0.6;
             display: flex; flex-direction: column; align-items: center;
+            user-select: none; /* Запрещаем выделение текста при перетаскивании */
         }
-        .carousel-item.active { transform: scale(1); opacity: 1; }
+        
+        .carousel-item.active {
+            transform: scale(1); opacity: 1;
+        }
 
-        /* Настройки для ПК (чтобы карточки не уезжали) */
-        @media (min-width: 601px) {
-            .carousel-container {
-                justify-content: flex-start; /* Убираем центровку, чтобы скролл работал корректно */
-                padding: 40px 40px;
-            }
-            .carousel-item {
-                flex: 0 0 320px; 
-            }
+        /* Адаптация для мобильных */
+        @media (max-width: 600px) {
+            .carousel-item { flex: 0 0 75vw; }
+            .carousel-container { padding: 20px 10px; }
+            .carousel-container::-webkit-scrollbar { display: none; } /* Скрываем полосу на телефоне */
         }
 
         /* Карточка */
@@ -76,10 +74,13 @@
             border-radius: 24px; padding: 30px 20px; width: 100%;
             display: flex; flex-direction: column; align-items: center; text-align: center;
             transition: border-color 0.3s, box-shadow 0.3s;
+            pointer-events: none; /* Отдаем клики контейнеру для свайпа */
         }
+        .card button { pointer-events: auto; } /* Возвращаем клики кнопке */
+        
         .card:hover { border-color: rgba(212,175,55,.5); box-shadow: 0 10px 40px rgba(0,0,0,.5); }
         
-        .card-img { width: 120px; height: 140px; margin: 0 auto 20px; position: relative; }
+        .card-img { width: 120px; height: 140px; margin-bottom: 20px; position: relative; }
         .card h3 { font-size: 20px; color: var(--gold-soft); margin-bottom: 8px; }
         .card .subtitle { font-size: 12px; color: var(--mint); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 12px; }
         .card p { font-size: 13px; color: var(--dim); margin-bottom: 20px; line-height: 1.5; flex-grow: 1; }
@@ -152,10 +153,10 @@
     </div>
 
     <script>
-        // Данные товаров (ИСПРАВЛЕНЫ НАЗВАНИЯ)
+        // Данные товаров
         const products = [
             { id: 1, name: 'Магний бисглицинат', sub: 'Сон и восстановление', desc: 'Премиальная форма хелатного магния. 360 мг элементарного магния в 3 капсулах для максимального эффекта. 90 капсул.', price: 1300 },
-            { id: 2, name: 'Витамин D3 + K2', sub: 'Иммунитет и кости', desc: 'Капсулы для поддержки иммунитета и здоровья костей.', price: 0 },
+            { id: 2, name: 'D3 + K2', sub: 'Иммунитет и кости', desc: 'Капсулы для поддержки иммунитета и здоровья костей.', price: 0 },
             { id: 3, name: 'Магний порошковый', sub: 'Большая банка', desc: 'Удобная форма для тех, кто не любит капсулы.', price: 0 },
             { id: 4, name: 'B-комплекс Премиум', sub: 'Энергия и нервная система', desc: 'Активные формы витаминов группы B.', price: 0 },
             { id: 5, name: 'Омега-3', sub: 'Сердце и мозг', desc: 'Высокая концентрация EPA/DHA.', price: 0 }
@@ -171,10 +172,10 @@
             const card = document.createElement('div');
             card.className = 'card';
             
+            // Банка с этикеткой
             const imgDiv = document.createElement('div');
             imgDiv.className = 'card-img';
             
-            // Сама банка
             const jar = document.createElement('div');
             jar.style.width = '80px';
             jar.style.height = '120px';
@@ -209,33 +210,21 @@
             label.style.boxShadow = 'inset 0 0 5px rgba(0,0,0,0.2)';
             label.style.fontFamily = 'sans-serif';
             
-            // Умный текст
-            let line1 = '';
-            let line2 = 'PREMIUM';
-            
-            if (p.name.includes('Витамин')) {
-                line1 = 'ВИТАМИН D3+K2';
-                line2 = '';
-            } else if (p.name.includes('Магний бисглицинат')) {
-                line1 = 'МАГНИЙ';
-                line2 = 'БИСГЛИЦИНАТ';
-            } else if (p.name.includes('Магний порошковый')) {
-                line1 = 'МАГНИЙ';
-                line2 = 'ПОРОШОК';
-            } else if (p.name.includes('B-комплекс')) {
-                line1 = 'B-КОМПЛЕКС';
-                line2 = 'ПРЕМИУМ';
-            } else if (p.name.includes('Омега')) {
-                line1 = 'ОМЕГА-3';
-                line2 = '';
-            }
+            // Надписи на этикетке
+            let labelName = 'ПРЕМИУМ';
+            let labelSub = '90 КАПС';
+            if (p.id === 1) { labelName = 'МАГНИЙ'; labelSub = 'BISGLYCINATE'; }
+            if (p.id === 2) { labelName = 'D3 + K2'; labelSub = 'PREMIUM'; }
+            if (p.id === 3) { labelName = 'МАГНИЙ'; labelSub = 'ПОРОШОК'; }
+            if (p.id === 4) { labelName = 'B-КОМПЛЕКС'; labelSub = 'PREMIUM'; }
+            if (p.id === 5) { labelName = 'ОМЕГА-3'; labelSub = 'PREMIUM'; }
 
             label.innerHTML = `
-                <div style="font-size: 5px; color: #8a6a14; letter-spacing: 1px; margin-bottom: 2px;">TUT HEALTH</div>
-                <div style="font-size: 8px; font-weight: bold; color: #1A0D06; font-family: serif; line-height: 1.1;">${line1}</div>
-                <div style="font-size: 6px; font-weight: bold; color: #1A0D06; font-family: serif; line-height: 1.1; margin-top: 1px;">${line2}</div>
+                <div style="font-size: 6px; color: #8a6a14; letter-spacing: 1px; margin-bottom: 2px;">TUT HEALTH</div>
+                <div style="font-size: 10px; font-weight: bold; color: #1A0D06; font-family: serif;">${labelName}</div>
+                <div style="font-size: 5px; color: #5C331A; margin-top: 2px;">${labelSub}</div>
                 <div style="width: 20px; height: 1px; background: #8a6a14; margin: 3px 0;"></div>
-                <div style="font-size: 5px; color: #5C331A;">90 КАПС</div>
+                <div style="font-size: 5px; color: #5C331A;">${p.id === 3 ? 'БОЛЬШАЯ БАНКА' : '90 КАПСУЛ'}</div>
             `;
             
             jar.appendChild(lid);
@@ -266,7 +255,37 @@
             carousel.appendChild(item);
         });
 
-        // Эффект карусели
+        // --- ЛОГИКА ПЕРЕТАСКИВАНИЯ (DRAG TO SCROLL) ---
+        let isDown = false;
+        let startX;
+        let scrollLeft;
+
+        carousel.addEventListener('mousedown', (e) => {
+            isDown = true;
+            carousel.style.cursor = 'grabbing';
+            startX = e.pageX - carousel.offsetLeft;
+            scrollLeft = carousel.scrollLeft;
+        });
+
+        carousel.addEventListener('mouseleave', () => {
+            isDown = false;
+            carousel.style.cursor = 'grab';
+        });
+
+        carousel.addEventListener('mouseup', () => {
+            isDown = false;
+            carousel.style.cursor = 'grab';
+        });
+
+        carousel.addEventListener('mousemove', (e) => {
+            if (!isDown) return;
+            e.preventDefault();
+            const x = e.pageX - carousel.offsetLeft;
+            const walk = (x - startX) * 2; // Скорость прокрутки
+            carousel.scrollLeft = scrollLeft - walk;
+        });
+
+        // Эффект карусели (увеличение активной карточки)
         const items = document.querySelectorAll('.carousel-item');
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
