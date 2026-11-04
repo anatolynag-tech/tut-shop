@@ -37,7 +37,7 @@
 
         .carousel-container {
             display: flex; overflow-x: auto; scroll-snap-type: x mandatory;
-            padding: 40px 0; gap: 20px; scrollbar-width: none; -ms-overflow-style: none;
+            padding: 40px 20px; gap: 20px; scrollbar-width: none; -ms-overflow-style: none;
         }
         .carousel-container::-webkit-scrollbar { display: none; }
         
@@ -129,8 +129,7 @@
     <script>
         // Данные товаров (без чувствительных данных)
         const products = [
-            { id: 1, name: 'Магний бисглицинат', sub: 'Сон и восстановление', desc: '120 мг элементарного магния в капсуле. 90 капсул.', price: 1300 },
-            { id: 2, name: 'Витамин D3', sub: 'Иммунитет и кости', desc: 'Капсулы для поддержки иммунитета.', price: 0 },
+            { id: 1, name: 'Магний бисглицинат', sub: 'Сон и восстановление', desc: 'Премиальная форма хелатного магния. 360 мг элементарного магния в 3 капсулах для максимального эффекта. 90 капсул.', price: 1300 },            { id: 2, name: 'Витамин D3', sub: 'Иммунитет и кости', desc: 'Капсулы для поддержки иммунитета.', price: 0 },
             { id: 3, name: 'Магний порошковый', sub: 'Большая банка', desc: 'Удобная форма для тех, кто не любит капсулы.', price: 0 },
             { id: 4, name: 'B-комплекс Премиум', sub: 'Энергия и нервная система', desc: 'Активные формы витаминов группы B.', price: 0 },
             { id: 5, name: 'Омега-3', sub: 'Сердце и мозг', desc: 'Высокая концентрация EPA/DHA.', price: 0 }
