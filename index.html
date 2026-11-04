@@ -166,9 +166,64 @@
             const card = document.createElement('div');
             card.className = 'card';
             
-            const imgDiv = document.createElement('div');
+                        const imgDiv = document.createElement('div');
             imgDiv.className = 'card-img';
-            imgDiv.textContent = '💊';
+            imgDiv.style.position = 'relative';
+            imgDiv.style.width = '120px';
+            imgDiv.style.height = '140px';
+            imgDiv.style.margin = '0 auto 20px';
+            imgDiv.style.background = 'none'; // Убираем старый фон
+            imgDiv.style.fontSize = '0'; // Убираем старую иконку
+            
+            // Сама банка
+            const jar = document.createElement('div');
+            jar.style.width = '80px';
+            jar.style.height = '120px';
+            jar.style.background = 'linear-gradient(90deg, #1A0D06 0%, #3E1F0F 20%, #5C331A 50%, #3E1F0F 80%, #1A0D06 100%)';
+            jar.style.borderRadius = '12px 12px 16px 16px';
+            jar.style.margin = '0 auto';
+            jar.style.position = 'relative';
+            jar.style.boxShadow = 'inset -5px 0 15px rgba(0,0,0,0.8), inset 5px 0 15px rgba(0,0,0,0.5), 0 10px 20px rgba(0,0,0,0.5)';
+            
+            // Крышка
+            const lid = document.createElement('div');
+            lid.style.width = '84px';
+            lid.style.height = '25px';
+            lid.style.background = 'linear-gradient(90deg, #0A0A0A 0%, #222 50%, #0A0A0A 100%)';
+            lid.style.borderRadius = '6px 6px 2px 2px';
+            lid.style.position = 'absolute';
+            lid.style.top = '-15px';
+            lid.style.left = '-2px';
+            lid.style.boxShadow = 'inset 0 -2px 5px rgba(255,255,255,0.1), 0 2px 5px rgba(0,0,0,0.5)';
+            
+            // Этикетка
+            const label = document.createElement('div');
+            label.style.width = '74px';
+            label.style.height = '60px';
+            label.style.background = '#E8DCC4';
+            label.style.position = 'absolute';
+            label.style.top = '35px';
+            label.style.left = '3px';
+            label.style.borderRadius = '2px';
+            label.style.display = 'flex';
+            label.style.flexDirection = 'column';
+            label.style.alignItems = 'center';
+            label.style.justifyContent = 'center';
+            label.style.boxShadow = 'inset 0 0 5px rgba(0,0,0,0.2)';
+            label.style.fontFamily = 'sans-serif';
+            
+            // Текст на этикетке
+            label.innerHTML = `
+                <div style="font-size: 6px; color: #8a6a14; letter-spacing: 1px; margin-bottom: 2px;">TUT HEALTH</div>
+                <div style="font-size: 10px; font-weight: bold; color: #1A0D06; font-family: serif;">МАГНИЙ</div>
+                <div style="font-size: 5px; color: #5C331A; margin-top: 2px;">BISGLYCINATE</div>
+                <div style="width: 20px; height: 1px; background: #8a6a14; margin: 3px 0;"></div>
+                <div style="font-size: 5px; color: #5C331A;">90 КАПСУЛ</div>
+            `;
+            
+            jar.appendChild(lid);
+            jar.appendChild(label);
+            imgDiv.appendChild(jar);
             
             const h3 = document.createElement('h3');
             h3.textContent = p.name;
