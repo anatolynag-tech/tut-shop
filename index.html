@@ -39,34 +39,34 @@
 
         /* Карусель */
         .carousel-container {
-            display: flex; overflow-x: scroll; scroll-snap-type: x mandatory;
-            padding: 40px 0; gap: 20px;
+            display: flex; overflow-x: auto; scroll-snap-type: x mandatory;
+            padding: 40px 20px; gap: 20px;
             cursor: grab;
             scroll-behavior: smooth;
-            -webkit-overflow-scrolling: touch;
         }
         .carousel-container:active { cursor: grabbing; }
-        .carousel-container::-webkit-scrollbar { height: 8px; }
-        .carousel-container::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); border-radius: 4px; }
+        
+        /* Скрываем полосу прокрутки для красоты, но она есть */
+        .carousel-container::-webkit-scrollbar { height: 6px; }
+        .carousel-container::-webkit-scrollbar-track { background: transparent; }
         .carousel-container::-webkit-scrollbar-thumb { background: rgba(212,175,55,0.3); border-radius: 4px; }
         
         .carousel-item {
-            flex: 0 0 75vw; /* Ширина для телефона */
+            flex: 0 0 75vw; 
             scroll-snap-align: center; transition: all 0.4s ease;
             transform: scale(0.85); opacity: 0.6;
             display: flex; flex-direction: column; align-items: center;
         }
-        .carousel-item.active {
-            transform: scale(1); opacity: 1;
-        }
+        .carousel-item.active { transform: scale(1); opacity: 1; }
 
+        /* Настройки для ПК (чтобы карточки не уезжали) */
         @media (min-width: 601px) {
             .carousel-container {
-                justify-content: center;
-                padding: 40px 20px;
+                justify-content: flex-start; /* Убираем центровку, чтобы скролл работал корректно */
+                padding: 40px 40px;
             }
             .carousel-item {
-                flex: 0 0 320px; /* Фиксированная ширина для ПК */
+                flex: 0 0 320px; 
             }
         }
 
@@ -79,9 +79,7 @@
         }
         .card:hover { border-color: rgba(212,175,55,.5); box-shadow: 0 10px 40px rgba(0,0,0,.5); }
         
-        .card-img { 
-            width: 120px; height: 140px; margin: 0 auto 20px; position: relative;
-        }
+        .card-img { width: 120px; height: 140px; margin: 0 auto 20px; position: relative; }
         .card h3 { font-size: 20px; color: var(--gold-soft); margin-bottom: 8px; }
         .card .subtitle { font-size: 12px; color: var(--mint); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 12px; }
         .card p { font-size: 13px; color: var(--dim); margin-bottom: 20px; line-height: 1.5; flex-grow: 1; }
@@ -154,10 +152,10 @@
     </div>
 
     <script>
-        // Данные товаров
+        // Данные товаров (ИСПРАВЛЕНЫ НАЗВАНИЯ)
         const products = [
             { id: 1, name: 'Магний бисглицинат', sub: 'Сон и восстановление', desc: 'Премиальная форма хелатного магния. 360 мг элементарного магния в 3 капсулах для максимального эффекта. 90 капсул.', price: 1300 },
-            { id: 2, name: 'Витамин D3', sub: 'Иммунитет и кости', desc: 'Капсулы для поддержки иммунитета.', price: 0 },
+            { id: 2, name: 'Витамин D3 + K2', sub: 'Иммунитет и кости', desc: 'Капсулы для поддержки иммунитета и здоровья костей.', price: 0 },
             { id: 3, name: 'Магний порошковый', sub: 'Большая банка', desc: 'Удобная форма для тех, кто не любит капсулы.', price: 0 },
             { id: 4, name: 'B-комплекс Премиум', sub: 'Энергия и нервная система', desc: 'Активные формы витаминов группы B.', price: 0 },
             { id: 5, name: 'Омега-3', sub: 'Сердце и мозг', desc: 'Высокая концентрация EPA/DHA.', price: 0 }
@@ -176,7 +174,7 @@
             const imgDiv = document.createElement('div');
             imgDiv.className = 'card-img';
             
-            // Сама банка (рисуем через стили)
+            // Сама банка
             const jar = document.createElement('div');
             jar.style.width = '80px';
             jar.style.height = '120px';
@@ -186,7 +184,6 @@
             jar.style.position = 'relative';
             jar.style.boxShadow = 'inset -5px 0 15px rgba(0,0,0,0.8), inset 5px 0 15px rgba(0,0,0,0.5), 0 10px 20px rgba(0,0,0,0.5)';
             
-            // Крышка
             const lid = document.createElement('div');
             lid.style.width = '84px';
             lid.style.height = '25px';
@@ -197,7 +194,6 @@
             lid.style.left = '-2px';
             lid.style.boxShadow = 'inset 0 -2px 5px rgba(255,255,255,0.1), 0 2px 5px rgba(0,0,0,0.5)';
             
-            // Этикетка
             const label = document.createElement('div');
             label.style.width = '74px';
             label.style.height = '60px';
@@ -213,12 +209,12 @@
             label.style.boxShadow = 'inset 0 0 5px rgba(0,0,0,0.2)';
             label.style.fontFamily = 'sans-serif';
             
-            // Умный текст на этикетке
+            // Умный текст
             let line1 = '';
             let line2 = 'PREMIUM';
             
             if (p.name.includes('Витамин')) {
-                line1 = 'ВИТАМИН D3';
+                line1 = 'ВИТАМИН D3+K2';
                 line2 = '';
             } else if (p.name.includes('Магний бисглицинат')) {
                 line1 = 'МАГНИЙ';
@@ -235,9 +231,9 @@
             }
 
             label.innerHTML = `
-                <div style="font-size: 5.5px; color: #8a6a14; letter-spacing: 1px; margin-bottom: 2px;">TUT HEALTH</div>
-                <div style="font-size: 8.5px; font-weight: bold; color: #1A0D06; font-family: serif; line-height: 1.1;">${line1}</div>
-                <div style="font-size: 6.5px; font-weight: bold; color: #1A0D06; font-family: serif; line-height: 1.1; margin-top: 1px;">${line2}</div>
+                <div style="font-size: 5px; color: #8a6a14; letter-spacing: 1px; margin-bottom: 2px;">TUT HEALTH</div>
+                <div style="font-size: 8px; font-weight: bold; color: #1A0D06; font-family: serif; line-height: 1.1;">${line1}</div>
+                <div style="font-size: 6px; font-weight: bold; color: #1A0D06; font-family: serif; line-height: 1.1; margin-top: 1px;">${line2}</div>
                 <div style="width: 20px; height: 1px; background: #8a6a14; margin: 3px 0;"></div>
                 <div style="font-size: 5px; color: #5C331A;">90 КАПС</div>
             `;
