@@ -39,9 +39,11 @@
 
         /* Карусель */
         .carousel-container {
-            display: flex; overflow-x: auto; scroll-snap-type: x mandatory;
+            display: flex; overflow-x: scroll; scroll-snap-type: x mandatory;
             padding: 40px 0; gap: 20px;
             cursor: grab;
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
         }
         .carousel-container:active { cursor: grabbing; }
         .carousel-container::-webkit-scrollbar { height: 8px; }
@@ -211,12 +213,31 @@
             label.style.boxShadow = 'inset 0 0 5px rgba(0,0,0,0.2)';
             label.style.fontFamily = 'sans-serif';
             
-            // Умный текст на этикетке (берет первое слово из названия)
-            const shortName = p.name.split(' ')[0].toUpperCase();
+            // Умный текст на этикетке
+            let line1 = '';
+            let line2 = 'PREMIUM';
+            
+            if (p.name.includes('Витамин')) {
+                line1 = 'ВИТАМИН D3';
+                line2 = '';
+            } else if (p.name.includes('Магний бисглицинат')) {
+                line1 = 'МАГНИЙ';
+                line2 = 'БИСГЛИЦИНАТ';
+            } else if (p.name.includes('Магний порошковый')) {
+                line1 = 'МАГНИЙ';
+                line2 = 'ПОРОШОК';
+            } else if (p.name.includes('B-комплекс')) {
+                line1 = 'B-КОМПЛЕКС';
+                line2 = 'ПРЕМИУМ';
+            } else if (p.name.includes('Омега')) {
+                line1 = 'ОМЕГА-3';
+                line2 = '';
+            }
+
             label.innerHTML = `
-                <div style="font-size: 6px; color: #8a6a14; letter-spacing: 1px; margin-bottom: 2px;">TUT HEALTH</div>
-                <div style="font-size: 10px; font-weight: bold; color: #1A0D06; font-family: serif;">${shortName}</div>
-                <div style="font-size: 5px; color: #5C331A; margin-top: 2px;">PREMIUM</div>
+                <div style="font-size: 5.5px; color: #8a6a14; letter-spacing: 1px; margin-bottom: 2px;">TUT HEALTH</div>
+                <div style="font-size: 8.5px; font-weight: bold; color: #1A0D06; font-family: serif; line-height: 1.1;">${line1}</div>
+                <div style="font-size: 6.5px; font-weight: bold; color: #1A0D06; font-family: serif; line-height: 1.1; margin-top: 1px;">${line2}</div>
                 <div style="width: 20px; height: 1px; background: #8a6a14; margin: 3px 0;"></div>
                 <div style="font-size: 5px; color: #5C331A;">90 КАПС</div>
             `;
