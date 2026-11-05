@@ -370,7 +370,7 @@
             document.getElementById('cartModal').classList.remove('on');
         }
 
-        function submitOrder() {
+                function submitOrder() {
             const nameInput = document.getElementById('userName');
             const phoneInput = document.getElementById('userPhone');
             const addressInput = document.getElementById('userAddress');
@@ -380,7 +380,29 @@
                 return;
             }
 
-            window.location.href = 'https://auth.robokassa.ru/Merchant/Invoice/rXh4xb70XUO2KoDbfrHblg';
+            // Собираем данные для отправки
+            const formData = {
+                name: nameInput.value.trim(),
+                phone: phoneInput.value.trim(),
+                address: addressInput.value.trim(),
+                items: cart.map(item => item.name).join(', '),
+                total: cart.reduce((sum, item) => sum + item.price, 0)
+            };
+
+            // Отправляем данные в Formspree
+            fetch('https://formspree.io/f/xrppdype', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            }).then(() => {
+                // После отправки перенаправляем на оплату
+                window.location.href = 'https://auth.robokassa.ru/Merchant/Invoice/rXh4xb70XUO2KoDbfrHblg';
+            }).catch(() => {
+                alert('Ошибка отправки заказа. Попробуйте еще раз.');
+            });
         }
     </script>
 </body>
