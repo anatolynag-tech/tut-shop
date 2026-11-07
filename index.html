@@ -100,8 +100,14 @@
         /* Форма */
         .form-group { margin-bottom: 15px; }
         .form-group label { display: block; font-size: 12px; color: var(--dim); margin-bottom: 5px; }
-        .form-group input { width: 100%; background: rgba(0,0,0,.4); border: 1px solid rgba(255,255,255,.1); border-radius: 12px; color: var(--txt); padding: 12px; font-size: 14px; outline: none; }
+        .form-group input[type="text"], .form-group input[type="tel"] { width: 100%; background: rgba(0,0,0,.4); border: 1px solid rgba(255,255,255,.1); border-radius: 12px; color: var(--txt); padding: 12px; font-size: 14px; outline: none; }
         .form-group input:focus { border-color: var(--gold); }
+        
+        /* Чекбокс */
+        .checkbox-group { display: flex; align-items: flex-start; gap: 8px; margin-top: 15px; }
+        .checkbox-group input[type="checkbox"] { width: auto; margin-top: 3px; cursor: pointer; accent-color: var(--gold); }
+        .checkbox-group label { font-size: 12px; color: var(--dim); margin-bottom: 0; line-height: 1.4; cursor: pointer; }
+        
         .btn-pay { background: linear-gradient(135deg, #E9C463, #B8860B); color: #0A1A10; border: none; border-radius: 999px; padding: 15px; font-weight: 800; font-size: 16px; cursor: pointer; width: 100%; margin-top: 20px; transition: 0.3s; }
         .btn-pay:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(212,175,55,.3); }
     </style>
@@ -147,10 +153,29 @@
                     <label>Адрес доставки по Челябинску</label>
                     <input type="text" id="userAddress" placeholder="Например: ЧМЗ, ул. Богдана Хмельницкого, 15">
                 </div>
+                
+                <div class="checkbox-group">
+                    <input type="checkbox" id="userConsent">
+                    <label for="userConsent">
+                        Я согласен на обработку персональных данных в соответствии с <a href="consent.html" target="_blank" style="color: var(--gold-soft); text-decoration: none;">Согласием</a> и <a href="privacy.html" target="_blank" style="color: var(--gold-soft); text-decoration: none;">Политикой конфиденциальности</a>
+                    </label>
+                </div>
+
                 <button class="btn-pay" onclick="submitOrder()">Перейти к оплате</button>
             </div>
         </div>
     </div>
+
+    <footer style="text-align: center; padding: 40px 20px; margin-top: 60px; border-top: 1px solid rgba(212,175,55,.15); font-size: 11px; color: var(--dim); line-height: 1.8;">
+        <p>© ТУТ | Премиум</p>
+        <p>Продавец: ИП Исаков А.И.</p>
+        <p>Полные реквизиты (ИНН, ОГРНИП) предоставляются по запросу: <a href="mailto:anatoly.nag@yandex.ru" style="color: var(--gold-soft); text-decoration: none;">anatoly.nag@yandex.ru</a></p>
+        <p>
+            <a href="privacy.html" style="color: var(--dim); text-decoration: none; margin: 0 5px;">Политика конфиденциальности</a> | 
+            <a href="oferta.html" style="color: var(--dim); text-decoration: none; margin: 0 5px;">Публичная оферта</a> | 
+            <a href="consent.html" style="color: var(--dim); text-decoration: none; margin: 0 5px;">Согласие на обработку ПДн</a>
+        </p>
+    </footer>
 
     <script>
         // Данные товаров
@@ -458,9 +483,15 @@
             const nameInput = document.getElementById('userName');
             const phoneInput = document.getElementById('userPhone');
             const addressInput = document.getElementById('userAddress');
+            const consentInput = document.getElementById('userConsent');
 
             if (!nameInput.value.trim() || !phoneInput.value.trim() || !addressInput.value.trim()) {
                 alert('Пожалуйста, заполните все поля');
+                return;
+            }
+            
+            if (!consentInput.checked) {
+                alert('Пожалуйста, согласитесь на обработку персональных данных');
                 return;
             }
 
@@ -513,11 +544,5 @@
             });
         }
     </script>
-        <footer style="text-align: center; padding: 40px 20px; margin-top: 60px; border-top: 1px solid rgba(212,175,55,.15); font-size: 11px; color: var(--dim); line-height: 1.8;">
-        <p>© ТУТ | Премиум</p>
-        <p>Продавец: ИП Исаков А.И.</p>
-        <p>Полные реквизиты (ИНН, ОГРНИП) предоставляются по запросу: <a href="mailto:anatoly.nag@yandex.ru" style="color: var(--gold-soft);">anatoly.nag@yandex.ru</a></p>
-        <p><a href="privacy.html" style="color: var(--dim);">Политика конфиденциальности</a></p>
-    </footer>
 </body>
 </html>
