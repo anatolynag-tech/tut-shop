@@ -50,22 +50,21 @@
         .carousel-container::-webkit-scrollbar-thumb { background: rgba(212,175,55,0.3); border-radius: 4px; }
         
         .carousel-item {
-            flex: 0 0 280px; /* Размер для компьютера */
+            flex: 0 0 280px;
             scroll-snap-align: center; transition: all 0.4s ease;
             transform: scale(0.85); opacity: 0.6;
             display: flex; flex-direction: column; align-items: center;
-            user-select: none; /* Запрещаем выделение текста при перетаскивании */
+            user-select: none;
         }
         
         .carousel-item.active {
             transform: scale(1); opacity: 1;
         }
 
-        /* Адаптация для мобильных */
         @media (max-width: 600px) {
             .carousel-item { flex: 0 0 75vw; }
             .carousel-container { padding: 20px 10px; }
-            .carousel-container::-webkit-scrollbar { display: none; } /* Скрываем полосу на телефоне */
+            .carousel-container::-webkit-scrollbar { display: none; }
         }
 
         /* Карточка */
@@ -74,9 +73,9 @@
             border-radius: 24px; padding: 30px 20px; width: 100%;
             display: flex; flex-direction: column; align-items: center; text-align: center;
             transition: border-color 0.3s, box-shadow 0.3s;
-            pointer-events: none; /* Отдаем клики контейнеру для свайпа */
+            pointer-events: none;
         }
-        .card button { pointer-events: auto; } /* Возвращаем клики кнопке */
+        .card button { pointer-events: auto; }
         
         .card:hover { border-color: rgba(212,175,55,.5); box-shadow: 0 10px 40px rgba(0,0,0,.5); }
         
@@ -281,11 +280,11 @@
             if (!isDown) return;
             e.preventDefault();
             const x = e.pageX - carousel.offsetLeft;
-            const walk = (x - startX) * 2; // Скорость прокрутки
+            const walk = (x - startX) * 2;
             carousel.scrollLeft = scrollLeft - walk;
         });
 
-        // Эффект карусели (увеличение активной карточки)
+        // Эффект карусели
         const items = document.querySelectorAll('.carousel-item');
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
@@ -308,12 +307,11 @@
                 return;
             }
             
-            // Проверяем, есть ли уже этот товар в корзине
             const existingItem = cart.find(item => item.id === id);
             if (existingItem) {
-                existingItem.quantity += 1; // Увеличиваем количество
+                existingItem.quantity += 1;
             } else {
-                cart.push({ ...product, quantity: 1 }); // Добавляем новый товар с quantity=1
+                cart.push({ ...product, quantity: 1 });
             }
             
             updateCart();
@@ -345,7 +343,6 @@
                 const nameSpan = document.createElement('span');
                 nameSpan.textContent = item.name;
                 
-                // Блок с количеством
                 const qtyDiv = document.createElement('div');
                 qtyDiv.style.display = 'flex';
                 qtyDiv.style.alignItems = 'center';
@@ -395,39 +392,12 @@
             cartTotal.textContent = `${total} ₽`;
         }
 
-            let total = 0;
-            cart.forEach((item, index) => {
-                const row = document.createElement('div');
-                row.className = 'cart-item';
-                
-                const nameSpan = document.createElement('span');
-                nameSpan.textContent = item.name;
-                
-                const priceSpan = document.createElement('span');
-                priceSpan.textContent = `${item.price} ₽`;
-                
-                const delBtn = document.createElement('button');
-                delBtn.textContent = '✕';
-                delBtn.style.background = 'none';
-                delBtn.style.border = 'none';
-                delBtn.style.color = 'red';
-                delBtn.style.cursor = 'pointer';
-                delBtn.onclick = () => removeFromCart(index);
-                
-                row.append(nameSpan, priceSpan, delBtn);
-                cartItems.appendChild(row);
-                
-                total += item.price;
-            });
-            cartTotal.textContent = `${total} ₽`;
-        }
-
         function changeQuantity(index, delta) {
             const item = cart[index];
             item.quantity += delta;
             
             if (item.quantity <= 0) {
-                cart.splice(index, 1); // Если количество 0, удаляем товар
+                cart.splice(index, 1);
             }
             updateCart();
         }
@@ -456,16 +426,14 @@
                 return;
             }
 
-            // Собираем данные для отправки
             const formData = {
                 name: nameInput.value.trim(),
                 phone: phoneInput.value.trim(),
                 address: addressInput.value.trim(),
-                items: cart.map(item => item.name).join(', '),
-                total: cart.reduce((sum, item) => sum + item.price, 0)
+                items: cart.map(item => `${item.name} (${item.quantity} шт.)`).join(', '),
+                total: cart.reduce((sum, item) => sum + item.price * item.quantity, 0)
             };
 
-            // Отправляем данные в Formspree
             fetch('https://formspree.io/f/xrppdype', {
                 method: 'POST',
                 headers: {
@@ -474,7 +442,6 @@
                 },
                 body: JSON.stringify(formData)
             }).then(() => {
-                // После отправки перенаправляем на оплату
                 window.location.href = 'https://auth.robokassa.ru/Merchant/Invoice/rXh4xb70XUO2KoDbfrHblg';
             }).catch(() => {
                 alert('Ошибка отправки заказа. Попробуйте еще раз.');
