@@ -307,13 +307,21 @@
                 alert('Этот товар пока в разработке. Мы сообщим о старте продаж!');
                 return;
             }
-            cart.push(product);
+            
+            // Проверяем, есть ли уже этот товар в корзине
+            const existingItem = cart.find(item => item.id === id);
+            if (existingItem) {
+                existingItem.quantity += 1; // Увеличиваем количество
+            } else {
+                cart.push({ ...product, quantity: 1 }); // Добавляем новый товар с quantity=1
+            }
+            
             updateCart();
             alert('Добавлено в корзину!');
         }
 
         function updateCart() {
-            document.getElementById('cartCount').textContent = cart.length;
+            document.getElementById('cartCount').textContent = cart.reduce((sum, item) => sum + item.quantity, 0);
             const cartItems = document.getElementById('cartItems');
             const cartTotal = document.getElementById('cartTotalPrice');
             
@@ -328,6 +336,64 @@
                 cartTotal.textContent = '0 ₽';
                 return;
             }
+
+            let total = 0;
+            cart.forEach((item, index) => {
+                const row = document.createElement('div');
+                row.className = 'cart-item';
+                
+                const nameSpan = document.createElement('span');
+                nameSpan.textContent = item.name;
+                
+                // Блок с количеством
+                const qtyDiv = document.createElement('div');
+                qtyDiv.style.display = 'flex';
+                qtyDiv.style.alignItems = 'center';
+                qtyDiv.style.gap = '10px';
+                
+                const minusBtn = document.createElement('button');
+                minusBtn.textContent = '-';
+                minusBtn.style.background = 'none';
+                minusBtn.style.border = '1px solid rgba(255,255,255,0.2)';
+                minusBtn.style.color = 'white';
+                minusBtn.style.borderRadius = '5px';
+                minusBtn.style.cursor = 'pointer';
+                minusBtn.style.padding = '2px 8px';
+                minusBtn.onclick = () => changeQuantity(index, -1);
+                
+                const qtySpan = document.createElement('span');
+                qtySpan.textContent = item.quantity;
+                
+                const plusBtn = document.createElement('button');
+                plusBtn.textContent = '+';
+                plusBtn.style.background = 'none';
+                plusBtn.style.border = '1px solid rgba(255,255,255,0.2)';
+                plusBtn.style.color = 'white';
+                plusBtn.style.borderRadius = '5px';
+                plusBtn.style.cursor = 'pointer';
+                plusBtn.style.padding = '2px 8px';
+                plusBtn.onclick = () => changeQuantity(index, 1);
+                
+                qtyDiv.append(minusBtn, qtySpan, plusBtn);
+                
+                const priceSpan = document.createElement('span');
+                priceSpan.textContent = `${item.price * item.quantity} ₽`;
+                
+                const delBtn = document.createElement('button');
+                delBtn.textContent = '✕';
+                delBtn.style.background = 'none';
+                delBtn.style.border = 'none';
+                delBtn.style.color = 'red';
+                delBtn.style.cursor = 'pointer';
+                delBtn.onclick = () => removeFromCart(index);
+                
+                row.append(nameSpan, qtyDiv, priceSpan, delBtn);
+                cartItems.appendChild(row);
+                
+                total += item.price * item.quantity;
+            });
+            cartTotal.textContent = `${total} ₽`;
+        }
 
             let total = 0;
             cart.forEach((item, index) => {
@@ -354,6 +420,16 @@
                 total += item.price;
             });
             cartTotal.textContent = `${total} ₽`;
+        }
+
+        function changeQuantity(index, delta) {
+            const item = cart[index];
+            item.quantity += delta;
+            
+            if (item.quantity <= 0) {
+                cart.splice(index, 1); // Если количество 0, удаляем товар
+            }
+            updateCart();
         }
 
         function removeFromCart(index) {
