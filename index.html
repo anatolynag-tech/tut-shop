@@ -144,8 +144,8 @@
                     <input type="tel" id="userPhone" placeholder="+7 (999) 999-99-99">
                 </div>
                 <div class="form-group">
-                    <label>Адрес доставки или ПВЗ</label>
-                    <input type="text" id="userAddress" placeholder="Город, улица, дом или пункт выдачи">
+                    <label>Адрес доставки по Челябинску</label>
+                    <input type="text" id="userAddress" placeholder="Например: ЧМЗ, ул. Богдана Хмельницкого, 15">
                 </div>
                 <button class="btn-pay" onclick="submitOrder()">Перейти к оплате</button>
             </div>
@@ -316,8 +316,6 @@
             }
             
             updateCart();
-            // Вместо alert сделаем красивое уведомление? Пока оставим alert.
-            // alert('Добавлено в корзину!');
         }
 
         function updateCart() {
@@ -346,14 +344,14 @@
                 // Левая часть: Название
                 const nameSpan = document.createElement('span');
                 nameSpan.textContent = item.name;
-                nameSpan.style.flex = '1'; // Занимает оставшееся место
+                nameSpan.style.flex = '1';
                 nameSpan.style.marginRight = '10px';
                 
                 // Правая часть: Кнопки +/-, Сумма, Удаление
                 const controlsDiv = document.createElement('div');
                 controlsDiv.style.display = 'flex';
                 controlsDiv.style.alignItems = 'center';
-                controlsDiv.style.gap = '15px'; // Расстояние между блоками
+                controlsDiv.style.gap = '15px';
                 
                 // 1. Блок с кнопками +/-
                 const qtyDiv = document.createElement('div');
@@ -366,7 +364,7 @@
                 minusBtn.style.background = 'rgba(255,255,255,0.1)';
                 minusBtn.style.border = 'none';
                 minusBtn.style.color = 'white';
-                minusBtn.style.borderRadius = '50%'; // Круглые
+                minusBtn.style.borderRadius = '50%';
                 minusBtn.style.width = '26px';
                 minusBtn.style.height = '26px';
                 minusBtn.style.display = 'flex';
@@ -386,7 +384,7 @@
                 plusBtn.style.background = 'rgba(255,255,255,0.1)';
                 plusBtn.style.border = 'none';
                 plusBtn.style.color = 'white';
-                plusBtn.style.borderRadius = '50%'; // Круглые
+                plusBtn.style.borderRadius = '50%';
                 plusBtn.style.width = '26px';
                 plusBtn.style.height = '26px';
                 plusBtn.style.display = 'flex';
@@ -403,7 +401,7 @@
                 priceDelDiv.style.display = 'flex';
                 priceDelDiv.style.alignItems = 'center';
                 priceDelDiv.style.gap = '10px';
-                priceDelDiv.style.minWidth = '80px'; // Чтобы не прыгало
+                priceDelDiv.style.minWidth = '80px';
                 priceDelDiv.style.justifyContent = 'flex-end';
 
                 const priceSpan = document.createElement('span');
@@ -415,7 +413,7 @@
                 delBtn.textContent = '✕';
                 delBtn.style.background = 'none';
                 delBtn.style.border = 'none';
-                delBtn.style.color = '#ff6b6b'; // Красный
+                delBtn.style.color = '#ff6b6b';
                 delBtn.style.fontSize = '18px';
                 delBtn.style.cursor = 'pointer';
                 delBtn.style.padding = '0 5px';
@@ -423,7 +421,6 @@
                 
                 priceDelDiv.append(priceSpan, delBtn);
                 
-                // Собираем строку
                 controlsDiv.append(qtyDiv, priceDelDiv);
                 row.append(nameSpan, controlsDiv);
                 cartItems.appendChild(row);
@@ -467,13 +464,37 @@
                 return;
             }
 
+            // Считаем итоговую сумму
+            const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+
+            // Выбираем нужную ссылку в зависимости от суммы
+            let payUrl = '';
+            if (total === 1300) {
+                payUrl = 'https://auth.robokassa.ru/merchant/Invoice/t26qZIDK5ECFK65vOn83QA';
+            } else if (total === 2600) {
+                payUrl = 'https://auth.robokassa.ru/merchant/Invoice/CRBizY3IXUy0AARYxuHAvw';
+            } else if (total === 3900) {
+                payUrl = 'https://auth.robokassa.ru/merchant/Invoice/nq5cgFvZiEGDPxy_3TRGYA';
+            } else if (total === 5200) {
+                payUrl = 'https://auth.robokassa.ru/merchant/Invoice/8xoP89_5D0-aMbJU1CsMyQ';
+            } else {
+                alert('Пожалуйста, свяжитесь с нами для оформления заказа на сумму ' + total + ' ₽');
+                return;
+            }
+
             const formData = {
                 name: nameInput.value.trim(),
                 phone: phoneInput.value.trim(),
                 address: addressInput.value.trim(),
                 items: cart.map(item => `${item.name} (${item.quantity} шт.)`).join(', '),
-                total: cart.reduce((sum, item) => sum + item.price * item.quantity, 0)
+                total: total
             };
+
+            // Меняем текст кнопки, чтобы клиент понял, что идет отправка
+            const submitBtn = document.querySelector('.btn-pay');
+            const originalText = submitBtn.textContent;
+            submitBtn.textContent = 'Отправка...';
+            submitBtn.disabled = true;
 
             fetch('https://formspree.io/f/xrppdype', {
                 method: 'POST',
@@ -483,10 +504,12 @@
                 },
                 body: JSON.stringify(formData)
             }).then(() => {
-                // Пока оставляем фиксированную ссылку, как договаривались
-                window.location.href = 'https://auth.robokassa.ru/Merchant/Invoice/rXh4xb70XUO2KoDbfrHblg';
+                // Перекидываем на нужную ссылку Робокассы
+                window.location.href = payUrl;
             }).catch(() => {
                 alert('Ошибка отправки заказа. Попробуйте еще раз.');
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
             });
         }
     </script>
