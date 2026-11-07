@@ -94,7 +94,7 @@
         .modal-box { background: linear-gradient(175deg, #0B2417, #071B11); border: 1px solid rgba(212,175,55,.4); border-radius: 28px; max-width: 500px; width: 100%; padding: 30px; max-height: 85vh; overflow-y: auto; position: relative; }
         .modal-x { position: absolute; top: 15px; right: 15px; background: none; border: none; color: var(--dim); font-size: 24px; cursor: pointer; }
         
-        .cart-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,.1); font-size: 14px; }
+        .cart-item { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid rgba(255,255,255,.1); font-size: 14px; }
         .cart-total { display: flex; justify-content: space-between; font-size: 18px; font-weight: 700; color: var(--gold-soft); margin: 20px 0; }
 
         /* Форма */
@@ -102,7 +102,8 @@
         .form-group label { display: block; font-size: 12px; color: var(--dim); margin-bottom: 5px; }
         .form-group input { width: 100%; background: rgba(0,0,0,.4); border: 1px solid rgba(255,255,255,.1); border-radius: 12px; color: var(--txt); padding: 12px; font-size: 14px; outline: none; }
         .form-group input:focus { border-color: var(--gold); }
-        .btn-pay { background: linear-gradient(135deg, #E9C463, #B8860B); color: #0A1A10; border: none; border-radius: 999px; padding: 15px; font-weight: 800; font-size: 16px; cursor: pointer; width: 100%; margin-top: 20px; }
+        .btn-pay { background: linear-gradient(135deg, #E9C463, #B8860B); color: #0A1A10; border: none; border-radius: 999px; padding: 15px; font-weight: 800; font-size: 16px; cursor: pointer; width: 100%; margin-top: 20px; transition: 0.3s; }
+        .btn-pay:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(212,175,55,.3); }
     </style>
 </head>
 <body>
@@ -315,7 +316,8 @@
             }
             
             updateCart();
-            alert('Добавлено в корзину!');
+            // Вместо alert сделаем красивое уведомление? Пока оставим alert.
+            // alert('Добавлено в корзину!');
         }
 
         function updateCart() {
@@ -329,6 +331,7 @@
                 const empty = document.createElement('p');
                 empty.style.textAlign = 'center';
                 empty.style.color = 'var(--dim)';
+                empty.style.padding = '20px 0';
                 empty.textContent = 'Корзина пуста';
                 cartItems.appendChild(empty);
                 cartTotal.textContent = '0 ₽';
@@ -340,51 +343,89 @@
                 const row = document.createElement('div');
                 row.className = 'cart-item';
                 
+                // Левая часть: Название
                 const nameSpan = document.createElement('span');
                 nameSpan.textContent = item.name;
+                nameSpan.style.flex = '1'; // Занимает оставшееся место
+                nameSpan.style.marginRight = '10px';
                 
+                // Правая часть: Кнопки +/-, Сумма, Удаление
+                const controlsDiv = document.createElement('div');
+                controlsDiv.style.display = 'flex';
+                controlsDiv.style.alignItems = 'center';
+                controlsDiv.style.gap = '15px'; // Расстояние между блоками
+                
+                // 1. Блок с кнопками +/-
                 const qtyDiv = document.createElement('div');
                 qtyDiv.style.display = 'flex';
                 qtyDiv.style.alignItems = 'center';
-                qtyDiv.style.gap = '10px';
+                qtyDiv.style.gap = '6px';
                 
                 const minusBtn = document.createElement('button');
                 minusBtn.textContent = '-';
-                minusBtn.style.background = 'none';
-                minusBtn.style.border = '1px solid rgba(255,255,255,0.2)';
+                minusBtn.style.background = 'rgba(255,255,255,0.1)';
+                minusBtn.style.border = 'none';
                 minusBtn.style.color = 'white';
-                minusBtn.style.borderRadius = '5px';
+                minusBtn.style.borderRadius = '50%'; // Круглые
+                minusBtn.style.width = '26px';
+                minusBtn.style.height = '26px';
+                minusBtn.style.display = 'flex';
+                minusBtn.style.alignItems = 'center';
+                minusBtn.style.justifyContent = 'center';
                 minusBtn.style.cursor = 'pointer';
-                minusBtn.style.padding = '2px 8px';
+                minusBtn.style.fontSize = '16px';
                 minusBtn.onclick = () => changeQuantity(index, -1);
                 
                 const qtySpan = document.createElement('span');
                 qtySpan.textContent = item.quantity;
+                qtySpan.style.minWidth = '15px';
+                qtySpan.style.textAlign = 'center';
                 
                 const plusBtn = document.createElement('button');
                 plusBtn.textContent = '+';
-                plusBtn.style.background = 'none';
-                plusBtn.style.border = '1px solid rgba(255,255,255,0.2)';
+                plusBtn.style.background = 'rgba(255,255,255,0.1)';
+                plusBtn.style.border = 'none';
                 plusBtn.style.color = 'white';
-                plusBtn.style.borderRadius = '5px';
+                plusBtn.style.borderRadius = '50%'; // Круглые
+                plusBtn.style.width = '26px';
+                plusBtn.style.height = '26px';
+                plusBtn.style.display = 'flex';
+                plusBtn.style.alignItems = 'center';
+                plusBtn.style.justifyContent = 'center';
                 plusBtn.style.cursor = 'pointer';
-                plusBtn.style.padding = '2px 8px';
+                plusBtn.style.fontSize = '16px';
                 plusBtn.onclick = () => changeQuantity(index, 1);
                 
                 qtyDiv.append(minusBtn, qtySpan, plusBtn);
                 
+                // 2. Блок с суммой и крестиком
+                const priceDelDiv = document.createElement('div');
+                priceDelDiv.style.display = 'flex';
+                priceDelDiv.style.alignItems = 'center';
+                priceDelDiv.style.gap = '10px';
+                priceDelDiv.style.minWidth = '80px'; // Чтобы не прыгало
+                priceDelDiv.style.justifyContent = 'flex-end';
+
                 const priceSpan = document.createElement('span');
                 priceSpan.textContent = `${item.price * item.quantity} ₽`;
+                priceSpan.style.whiteSpace = 'nowrap';
+                priceSpan.style.fontWeight = '600';
                 
                 const delBtn = document.createElement('button');
                 delBtn.textContent = '✕';
                 delBtn.style.background = 'none';
                 delBtn.style.border = 'none';
-                delBtn.style.color = 'red';
+                delBtn.style.color = '#ff6b6b'; // Красный
+                delBtn.style.fontSize = '18px';
                 delBtn.style.cursor = 'pointer';
+                delBtn.style.padding = '0 5px';
                 delBtn.onclick = () => removeFromCart(index);
                 
-                row.append(nameSpan, qtyDiv, priceSpan, delBtn);
+                priceDelDiv.append(priceSpan, delBtn);
+                
+                // Собираем строку
+                controlsDiv.append(qtyDiv, priceDelDiv);
+                row.append(nameSpan, controlsDiv);
                 cartItems.appendChild(row);
                 
                 total += item.price * item.quantity;
@@ -442,6 +483,7 @@
                 },
                 body: JSON.stringify(formData)
             }).then(() => {
+                // Пока оставляем фиксированную ссылку, как договаривались
                 window.location.href = 'https://auth.robokassa.ru/Merchant/Invoice/rXh4xb70XUO2KoDbfrHblg';
             }).catch(() => {
                 alert('Ошибка отправки заказа. Попробуйте еще раз.');
